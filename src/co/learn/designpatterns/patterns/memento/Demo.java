@@ -1,5 +1,7 @@
 package co.learn.designpatterns.patterns.memento;
 
+import static co.learn.log.Log.logLine;
+
 class Memento {
     private final int balance;
 
@@ -42,12 +44,12 @@ public class Demo {
         Memento m1 = acc.deposit(50);
         Memento m2 = acc.deposit(25);
 
-        System.out.println(acc);
+        logLine(acc);
 
         acc.restore(m1);
-        System.out.println(acc);
+        logLine(acc);
 
         acc.restore(m2);
-        System.out.println(acc);
+        logLine(acc);
     }
 }
