@@ -8,14 +8,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class Token {
-    private int value = 0;
+    public int value = 0;
 
     public Token(int value) {
         this.value = value;
-    }
-
-    public int getValue() {
-        return value;
     }
 }
 
@@ -37,13 +33,12 @@ class TokenMachine {
     public Memento addToken(int value) {
         Token token = new Token(value);
         tokens.add(token);
-//        return new Memento(tokens.stream().collect(Collectors.toList())); // this works as well
-        return new Memento(List.copyOf(tokens));
+        return new Memento(tokens.stream().map(t -> new Token(t.value)).collect(Collectors.toList()));
     }
 
     public Memento addToken(Token token) {
         tokens.add(token);
-        return new Memento(List.copyOf(tokens));
+        return new Memento(tokens.stream().map(t -> new Token(t.value)).collect(Collectors.toList()));
     }
 
     public void revert(Memento m) {
@@ -60,22 +55,28 @@ public class Demo {
         Memento m4 = machine.addToken(new Token(4));
 
         StringBuilder v = new StringBuilder();
-        machine.tokens.forEach(token -> v.append(token.getValue()));
+        machine.tokens.forEach(token -> v.append(token.value));
         Assertions.assertEquals("1234", v.toString());
 
         machine.revert(m1);
         StringBuilder v1 = new StringBuilder();
-        machine.tokens.forEach(token -> v1.append(token.getValue()));
+        machine.tokens.forEach(token -> v1.append(token.value));
         Assert.assertEquals("1", v1.toString());
 
         machine.revert(m3);
         StringBuilder v3 = new StringBuilder();
-        machine.tokens.forEach(token -> v3.append(token.getValue()));
+        machine.tokens.forEach(token -> v3.append(token.value));
         Assertions.assertEquals("123", v3.toString());
 
         machine.revert(m2);
         StringBuilder v2 = new StringBuilder();
-        machine.tokens.forEach(token -> v2.append(token.getValue()));
+        machine.tokens.forEach(token -> v2.append(token.value));
         Assertions.assertEquals("12", v2.toString());
+
+        machine.tokens.get(0).value = 9; // Ensure memento value returns correct snapshot even if token is modified
+        machine.revert(m4);
+        StringBuilder v4 = new StringBuilder();
+        machine.tokens.forEach(token -> v4.append(token.value));
+        Assertions.assertEquals("1234", v4.toString());
     }
 }
