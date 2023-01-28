@@ -62,6 +62,7 @@ public class Demo {
         logged.walk();
         logged.talk();
         logged.talk();
+        logged.toString();
 
         System.out.println(logged);
     }
